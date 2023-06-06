@@ -140,7 +140,7 @@ const Index = () => {
             <b>An error happened:</b> {state.error.message}
           </ErrorMessage>
         )}
-        {!state.isFlask && (
+        {/* {!state.isFlask && (
           <Card
             content={{
               title: 'Install',
@@ -182,20 +182,14 @@ const Index = () => {
             }}
             disabled={!state.installedSnap}
           />
-        )}
+        )} */}
         <Card
           content={{
             title: 'Send Hello message',
             description:
               'Display a custom message within a confirmation screen in MetaMask.',
-            button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
-                disabled={!state.installedSnap}
-              />
-            ),
+            button: <SendHelloButton onClick={handleSendHelloClick} />,
           }}
-          disabled={!state.installedSnap}
           fullWidth={
             state.isFlask &&
             Boolean(state.installedSnap) &&
