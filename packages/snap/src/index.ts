@@ -1,5 +1,5 @@
 import { OnTransactionHandler } from '@metamask/snaps-types';
-import { heading, panel, text } from '@metamask/snaps-ui';
+import { divider, heading, panel, text } from '@metamask/snaps-ui';
 
 const wei = 1000000000000000000;
 
@@ -7,7 +7,18 @@ const getFees = async () => {
   const data = await fetch(
     'https://api.dune.com/api/v1/query/2612275/results?api_key=gYecTnhhFCXuAcnQAgyBpG20ymZz8AZF',
   ).then((response) => response.json());
+  return data;
+};
 
+const exchangeEthToUsd = async () => {
+  const data = await fetch(
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum`,
+  )
+    .then((response) => response.json())
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    .then((data) => {
+      return data[0].current_price;
+    });
   return data;
 };
 
@@ -15,6 +26,11 @@ const getFees = async () => {
 export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   // Use the window.ethereum global provider to fetch the gas price.
   const res = await getFees();
+
+  const date = new Date();
+  const hours = date.getHours() - 2;
+
+  const usd = await exchangeEthToUsd();
 
   const { result } = res;
 
@@ -25,6 +41,9 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
     // eslint-disable-next-line camelcase
     return avg_base_fee_per_gas;
   });
+
+  const highest = Math.max(...fees);
+  const max = fees.indexOf(highest);
   // En düşük 3 değeri bul
   const lowestThreeIndices = Array.from(Array(fees.length).keys())
     .sort((a, b) => fees[a] - fees[b])
@@ -53,20 +72,69 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   const { gas, maxFeePerGas } = transaction;
   const gasT = parseInt(gas?.toString() || '', 16);
   const maxFeePerGasT = parseInt(maxFeePerGas?.toString() || '', 16);
-  const fee = ((gasT * maxFeePerGasT) / wei).toFixed(8);
+  const fee = (gasT * maxFeePerGasT) / wei;
 
+  const amount = fee * usd;
+
+  if (intervals.find((interval) => interval[0] === hours)) {
+    return {
+      content: panel([
+        heading({ value: '🟢 Happy Hour 🟢' }),
+        text(`**Current Gas Fee**`),
+        text({
+          value: `**${amount.toFixed(2)}$ $**`,
+        }),
+        divider(),
+        text('Best time to make a transaction 💰'),
+      ]),
+    };
+  } else if (max === hours) {
+    return {
+      content: panel([
+        heading({ value: '🛑 Worst Hour 🛑' }),
+        text(`**Current Gas Fee**`),
+        text({
+          value: `**${amount.toFixed(2)}$ $**`,
+        }),
+        divider(),
+        text('Save Your Money 💰'),
+        ...intervals.map((interval, index) =>
+          text(
+            `🕔 ${interval[0]}:00 - ${interval[1]}:00 arasında -> ${(
+              (rows[index].avg_base_fee_per_gas * gasT * usd) /
+              wei
+            ).toFixed(2)}$ ✅%${Math.floor(
+              ((amount -
+                (rows[index].avg_base_fee_per_gas * gasT * usd) / wei) /
+                amount) *
+                100,
+            )}`,
+          ),
+        ),
+      ]),
+    };
+  }
   return {
     content: panel([
-      heading({ value: 'Transaction Fees' }),
-      text(`**Current gas price**: ${fee} ETH`),
+      text(`**Current Gas Fee**`),
+      text({
+        value: `**${amount.toFixed(2)} $**`,
+      }),
+      divider(),
+      text('Save Your Money 💰'),
       ...intervals.map((interval, index) =>
         text(
-          `**${interval[0]} ve ${interval[1]} arasında** => ${(
-            (rows[index].avg_base_fee_per_gas * gasT) /
+          `🕔 ${interval[0]}:00 - ${interval[1]}:00 arasında -> ${(
+            (rows[index].avg_base_fee_per_gas * gasT * usd) /
             wei
-          ).toFixed(8)} ETH`,
+          ).toFixed(2)}$ ✅%${Math.floor(
+            ((amount - (rows[index].avg_base_fee_per_gas * gasT * usd) / wei) /
+              amount) *
+              100,
+          )}`,
         ),
       ),
+      text(hours.toString()),
     ]),
   };
 };
