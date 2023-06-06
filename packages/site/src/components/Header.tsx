@@ -62,7 +62,7 @@ export const Header = ({
   return (
     <HeaderWrapper>
       <LogoWrapper>
-        <SnapLogo color={theme.colors.icon.default} size={36} />
+        <img alt="" src="/ytu.png" width="50" height="50" />
         <Title>YTU BLOCKCHAIN</Title>
       </LogoWrapper>
       <RightContainer>

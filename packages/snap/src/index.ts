@@ -43,7 +43,9 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
   });
 
   const highest = Math.max(...fees);
+  const lowest = Math.min(...fees);
   const max = fees.indexOf(highest);
+  const min = fees.indexOf(lowest);
   // En düşük 3 değeri bul
   const lowestThreeIndices = Array.from(Array(fees.length).keys())
     .sort((a, b) => fees[a] - fees[b])
@@ -113,6 +115,18 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
         ),
       ]),
     };
+  } else if (usd <= min) {
+    return {
+      content: panel([
+        heading({ value: '🟢 Happy Hour 🟢' }),
+        text(`**Current Gas Fee**`),
+        text({
+          value: `**${amount.toFixed(2)}$ $**`,
+        }),
+        divider(),
+        text('Best time to make a transaction 💰'),
+      ]),
+    };
   }
   return {
     content: panel([
@@ -134,7 +148,6 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
           )}`,
         ),
       ),
-      text(hours.toString()),
     ]),
   };
 };
