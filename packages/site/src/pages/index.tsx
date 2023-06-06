@@ -55,7 +55,7 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   max-width: 64.8rem;
   width: 100%;
   height: 100%;
@@ -102,21 +102,6 @@ const ErrorMessage = styled.div`
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
 
-  const handleConnectClick = async () => {
-    try {
-      await connectSnap();
-      const installedSnap = await getSnap();
-
-      dispatch({
-        type: MetamaskActions.SetInstalled,
-        payload: installedSnap,
-      });
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
   const handleSendHelloClick = async () => {
     try {
       await sendHello();
@@ -129,17 +114,9 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>GreedySnap</Span>
       </Heading>
-      <Subtitle>
-        Get started by editing <code>src/index.ts</code>
-      </Subtitle>
       <CardContainer>
-        {state.error && (
-          <ErrorMessage>
-            <b>An error happened:</b> {state.error.message}
-          </ErrorMessage>
-        )}
         {/* {!state.isFlask && (
           <Card
             content={{
@@ -185,9 +162,9 @@ const Index = () => {
         )} */}
         <Card
           content={{
-            title: 'Send Hello message',
+            title: 'Send Transaction',
             description:
-              'Display a custom message within a confirmation screen in MetaMask.',
+              'See what time of the day is the most affordable gas fee',
             button: <SendHelloButton onClick={handleSendHelloClick} />,
           }}
           fullWidth={
@@ -198,10 +175,8 @@ const Index = () => {
         />
         <Notice>
           <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
+            When you make a transaction, the most suitable <b>gas price </b>is
+            displayed on the transaction detail page specific to you.
           </p>
         </Notice>
       </CardContainer>

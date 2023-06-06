@@ -29,6 +29,7 @@ const LogoWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 `;
 
 const RightContainer = styled.div`
@@ -62,8 +63,8 @@ export const Header = ({
   return (
     <HeaderWrapper>
       <LogoWrapper>
-        <SnapLogo color={theme.colors.icon.default} size={36} />
-        <Title>template-snap</Title>
+        <img alt="" src="/ytu.png" style={{ width: 50, height: 50 }} />
+        <Title>YTU BLOCKCHAIN</Title>
       </LogoWrapper>
       <RightContainer>
         <Toggle

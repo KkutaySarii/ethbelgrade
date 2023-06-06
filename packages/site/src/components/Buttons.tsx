@@ -34,7 +34,6 @@ const Link = styled.a`
 
 const Button = styled.button`
   display: flex;
-  align-self: flex-start;
   align-items: center;
   justify-content: center;
   margin-top: auto;
@@ -95,7 +94,7 @@ export const ReconnectButton = (props: ComponentProps<typeof Button>) => {
 };
 
 export const SendHelloButton = (props: ComponentProps<typeof Button>) => {
-  return <Button {...props}>Send message</Button>;
+  return <Button {...props}>Send Transaction</Button>;
 };
 
 export const HeaderButtons = ({
