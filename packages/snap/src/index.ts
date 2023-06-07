@@ -102,7 +102,7 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
         text('Save Your Money 💰'),
         ...intervals.map((interval, index) =>
           text(
-            `🕔 ${interval[0]}:00 - ${interval[1]}:00 arasında -> ${(
+            `🕔 ${interval[0]}:00 - ${interval[1]}:00 ---> ${(
               (rows[index].avg_base_fee_per_gas * gasT * usd) /
               wei
             ).toFixed(2)}$ ✅%${Math.floor(
@@ -138,10 +138,10 @@ export const onTransaction: OnTransactionHandler = async ({ transaction }) => {
       text('Save Your Money 💰'),
       ...intervals.map((interval, index) =>
         text(
-          `🕔 ${interval[0]}:00 - ${interval[1]}:00 arasında -> ${(
+          `🕔 ${interval[0]}:00 - ${interval[1]}:00---> ${(
             (rows[index].avg_base_fee_per_gas * gasT * usd) /
             wei
-          ).toFixed(2)}$ ✅%${Math.floor(
+          ).toFixed(2)}$✅%${Math.floor(
             ((amount - (rows[index].avg_base_fee_per_gas * gasT * usd) / wei) /
               amount) *
               100,
